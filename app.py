@@ -7,6 +7,36 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
+import os
+import json
+import zipfile
+import streamlit as st
+from kaggle.api.kaggle_api_extended import KaggleApi
+
+@st.cache_data
+def load_data():
+    # Create kaggle.json from Streamlit secrets
+    os.makedirs("/root/.kaggle", exist_ok=True)
+    kaggle_json = {
+        "username": st.secrets["kaggle"]["username"],
+        "key": st.secrets["kaggle"]["key"]
+    }
+
+    with open("/root/.kaggle/kaggle.json", "w") as f:
+        json.dump(kaggle_json, f)
+
+    os.chmod("/root/.kaggle/kaggle.json", 0o600)
+
+    # Download dataset
+    api = KaggleApi()
+    api.authenticate()
+
+    if not os.path.exists("data"):
+        api.dataset_download_files(
+            "clmentbisaillon/fake-and-real-news-dataset",
+            path="data",
+            unzip=True
+        )
 # -------------------------
 # ---------------- BACKGROUND IMAGE ----------------
 def set_bg(image_file):
@@ -132,6 +162,7 @@ if st.button("Check News"):
             st.success(f"✅ REAL NEWS ({probability[1]*100:.2f}% confidence)")
         else:
             st.error(f"❌ FAKE NEWS ({probability[0]*100:.2f}% confidence)")
+
 
 
 
