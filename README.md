@@ -12,10 +12,7 @@ This is a **Streamlit app** that detects whether a news article or headline is *
 - Attractive **faded background** and user-friendly interface
 - No CSV files needed at runtime
 
----
+---🌐 [Open the Fake News Detector App](https://fake-news-detector-m4yagxwomkfrpuymhkmyjp.streamlit.app/) online!
 
-## How to Run Locally
 
-1. Clone this repository:
-```bash
-git clone https://github.com/YOUR_USERNAME/fake-news-detector.git
+
