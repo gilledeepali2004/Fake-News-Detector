@@ -72,7 +72,8 @@ This app uses **Naive Bayes** + **TF-IDF vectorization** for fake news detection
 - ❌ Fake news  
 - Confidence percentage shows model certainty
 """)
-")
+
+
 
 
 
