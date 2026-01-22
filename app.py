@@ -1,8 +1,6 @@
 import streamlit as st
 import joblib
 import re
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
 
 # ---------------- Page Config ----------------
 st.set_page_config(
@@ -34,7 +32,7 @@ def clean_text(text):
     text = re.sub(r'\s+', ' ', text)
     return text.strip()
 
-# ---------------- Load Model & Vectorizer ----------------
+# ---------------- Load Model ----------------
 @st.cache_resource
 def load_model():
     model = joblib.load("model.pkl")
@@ -42,41 +40,6 @@ def load_model():
     return model, vectorizer
 
 model, vectorizer = load_model()
-
-# ---------------- Calculate Accuracy ----------------
-# Load dataset again for testing accuracy
-import pandas as pd
-
-fake = pd.read_csv("Fake.csv")
-true = pd.read_csv("True.csv")
-fake["label"] = 0
-true["label"] = 1
-df = pd.concat([fake, true], ignore_index=True)
-df = df[["text", "label"]].dropna()
-df["text"] = df["text"].apply(clean_text)
-
-X = df["text"]
-y = df["label"]
-
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
-)
-X_train_vec = vectorizer.transform(X_train)
-X_test_vec = vectorizer.transform(X_test)
-
-y_pred = model.predict(X_test_vec)
-accuracy = accuracy_score(y_test, y_pred)
-
-# ---------------- Sidebar ----------------
-st.sidebar.header("About")
-st.sidebar.info("""
-This app uses **Naive Bayes** + **TF-IDF vectorization** for fake news detection.
-
-- ✅ Real news  
-- ❌ Fake news  
-- Confidence percentage shows model certainty
-""")
-st.sidebar.markdown(f"**Model Accuracy:** {accuracy*100:.2f}%")
 
 # ---------------- App Title ----------------
 st.markdown("<h1 style='text-align:center;color:white;'>📰 Fake News Detector</h1>", unsafe_allow_html=True)
@@ -99,6 +62,17 @@ if st.button("Check News"):
             st.success(f"✅ REAL NEWS ({probability[1]*100:.2f}% confidence)")
         else:
             st.error(f"❌ FAKE NEWS ({probability[0]*100:.2f}% confidence)")
+
+# ---------------- Sidebar ----------------
+st.sidebar.header("About")
+st.sidebar.info("""
+This app uses **Naive Bayes** + **TF-IDF vectorization** for fake news detection.
+
+- ✅ Real news  
+- ❌ Fake news  
+- Confidence percentage shows model certainty
+""")
+")
 
 
 
