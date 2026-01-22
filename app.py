@@ -1,6 +1,30 @@
 import streamlit as st
 import joblib
 import re
+import base64
+
+def set_bg(image_file):
+    with open(image_file, "rb") as f:
+        encoded = base64.b64encode(f.read()).decode()
+    
+    st.markdown(f"""
+    <style>
+    .stApp {{
+        background-image: url("data:image/png;base64,{encoded}");
+        background-size: cover;
+        background-attachment: fixed;
+    }}
+    .stApp::before {{
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.25);
+        z-index: -1;
+    }}
+    </style>
+    """, unsafe_allow_html=True)
+
+set_bg("c.png")
 
 # ---------------- Page Config ----------------
 st.set_page_config(
@@ -72,6 +96,7 @@ This app uses **Naive Bayes** + **TF-IDF vectorization** for fake news detection
 - ❌ Fake news  
 - Confidence percentage shows model certainty
 """)
+
 
 
 
